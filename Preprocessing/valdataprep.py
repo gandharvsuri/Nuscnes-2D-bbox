@@ -1,21 +1,22 @@
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
 print("Loading Metadata............\n\n")
-sample_data = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-train/sample_data.json")
-category = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-train/category.json")
+sample_data = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-val/sample_data.json")
+category = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-val/category.json")
 category["index"] = list(range(len(category)))
 category_index = dict(zip(category["token"],category["index"]))
 
-object_ann = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-train/object_ann.json")
+object_ann = pd.read_json("../Nuscenes Data/nuimages-v1.0-all-metadata/v1.0-val/object_ann.json")
 
 print("Creating Label Files............\n\n")
-for i, row in sample_data.iterrows():
+for i, row in tqdm(sample_data.iterrows()):
     filename = row["filename"].split("/")
 
     if filename[1] == "CAM_FRONT":
         fname = filename[2].replace("."+row["fileformat"], ".txt")
-        path =  "../Nuscenes Data/labels/tests/" + fname
+        path =  "../Nuscenes Data/labels/val/" + fname
         f = open(path, "w")
 
         object_df = object_ann[object_ann["sample_data_token"] == row["token"]]
